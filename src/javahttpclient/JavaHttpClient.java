@@ -15,7 +15,7 @@ public class JavaHttpClient {
     public static void main(String[] args) {
         // TODO code application logic here
         JavaHttpClient client = new JavaHttpClient();
-        client.GetExample();
+        client.PostMultipartExample();
     }
     
     public JavaHttpClient() {}
@@ -107,6 +107,55 @@ public class JavaHttpClient {
             
             String request = "POST /post HTTP/1.0\r\n"
                     + "Content-Type:application/x-www-form-urlencoded\r\n"
+                    + "Content-Length: " + body.length() + "\r\n"
+                    + "\r\n"
+                    + body;
+            
+            out.write(request.getBytes());
+            out.flush();
+            
+            StringBuilder response = new StringBuilder();
+            
+            int data = in.read();
+            
+            while(data != -1) {
+                response.append((char)data);
+                data = in.read();
+            }
+            
+            System.out.println(response);
+            socket.close();
+            
+            
+        } catch(UnknownHostException e) {
+            System.out.println(e);
+        } catch(IOException e) {
+            System.out.println(e);
+        }
+    }
+    
+    public void PostMultipartExample() {
+        try {
+            socket = new Socket("httpbin.org", 80);
+            in = socket.getInputStream();
+            out = socket.getOutputStream();
+            
+            /**
+             * "limit" can be any string that you choose as delimiter
+             */
+            
+            String body = "--limit\r\n"
+                    + "Content-Disposition: form-data; name=\"key1\"\r\n"
+                    + "\r\n"
+                    + "value1\r\n"
+                    + "--limit\r\n"
+                    + "Content-Disposition: form-data; name=\"key2\"\r\n"
+                    + "\r\n"
+                    + "value2\r\n"
+                    + "--limit--\r\n";
+            
+            String request = "POST /post HTTP/1.0\r\n"
+                    + "Content-Type:multipart/form-data; boundary=\"limit\"\r\n"
                     + "Content-Length: " + body.length() + "\r\n"
                     + "\r\n"
                     + body;
