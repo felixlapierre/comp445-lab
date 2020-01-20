@@ -51,4 +51,46 @@ public class JavaHttpClient {
         }
     }
     
+    public void PostUrlEncodedExample() {
+        try {
+            socket = new Socket("httpbin.org", 80);
+            in = socket.getInputStream();
+            out = socket.getOutputStream();
+            
+            /**
+             * We are sending this information to an 'echo' server that will just
+             * return our form data back to us in the response.
+             */
+            
+            String body = "key1=value1&key2=value2";
+            
+            String request = "POST /post HTTP/1.0\r\n"
+                    + "Content-Type:application/x-www-form-urlencoded\r\n"
+                    + "Content-Length: " + body.length() + "\r\n"
+                    + "\r\n"
+                    + body;
+            
+            out.write(request.getBytes());
+            out.flush();
+            
+            StringBuilder response = new StringBuilder();
+            
+            int data = in.read();
+            
+            while(data != -1) {
+                response.append((char)data);
+                data = in.read();
+            }
+            
+            System.out.println(response);
+            socket.close();
+            
+            
+        } catch(UnknownHostException e) {
+            System.out.println(e);
+        } catch(IOException e) {
+            System.out.println(e);
+        }
+    }
+    
 }
