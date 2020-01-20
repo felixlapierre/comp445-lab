@@ -14,12 +14,15 @@ public class JavaHttpClient {
      */
     public static void main(String[] args) {
         // TODO code application logic here
-        JavaHttpClient client = new JavaHttpClient("httpbin.org", 80);
+        JavaHttpClient client = new JavaHttpClient();
+        client.GetExample();
     }
     
-    public JavaHttpClient(String address, int port) {
+    public JavaHttpClient() {}
+    
+    public void GetExample() {
         try {
-            socket = new Socket(address, port);
+            socket = new Socket("httpbin.org", 80);
             in = socket.getInputStream();
             out = socket.getOutputStream();
             
