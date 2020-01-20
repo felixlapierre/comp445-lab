@@ -51,24 +51,23 @@ public class JavaHttpClient {
         }
     }
     
-    public void PostUrlEncodedExample() {
+    public void GetRedirectExample() {
         try {
-            socket = new Socket("httpbin.org", 80);
+            socket = new Socket("google.com", 80);
             in = socket.getInputStream();
             out = socket.getOutputStream();
             
             /**
-             * We are sending this information to an 'echo' server that will just
-             * return our form data back to us in the response.
+             * The following request will get a "Permanently Moved" response
+             * telling us to redirect to www.google.com.
              */
-            
-            String body = "key1=value1&key2=value2";
-            
-            String request = "POST /post HTTP/1.0\r\n"
-                    + "Content-Type:application/x-www-form-urlencoded\r\n"
-                    + "Content-Length: " + body.length() + "\r\n"
-                    + "\r\n"
-                    + body;
+            String request = "GET / HTTP/1.0\r\n\r\n";
+
+            /**
+             * When we get such a response, we should make a request like this
+             * instead.
+             */
+            //String request = "GET / HTTP/1.0\r\nHost: www.google.com\r\n\r\n";
             
             out.write(request.getBytes());
             out.flush();
@@ -93,23 +92,24 @@ public class JavaHttpClient {
         }
     }
     
-    public void GetRedirectExample() {
+    public void PostUrlEncodedExample() {
         try {
-            socket = new Socket("google.com", 80);
+            socket = new Socket("httpbin.org", 80);
             in = socket.getInputStream();
             out = socket.getOutputStream();
             
             /**
-             * The following request will get a "Permanently Moved" response
-             * telling us to redirect to www.google.com.
+             * We are sending this information to an 'echo' server that will just
+             * return our form data back to us in the response.
              */
-            String request = "GET / HTTP/1.0\r\n\r\n";
-
-            /**
-             * When we get such a response, we should make a request like this
-             * instead.
-             */
-            //String request = "GET / HTTP/1.0\r\nHost: www.google.com\r\n\r\n";
+            
+            String body = "key1=value1&key2=value2";
+            
+            String request = "POST /post HTTP/1.0\r\n"
+                    + "Content-Type:application/x-www-form-urlencoded\r\n"
+                    + "Content-Length: " + body.length() + "\r\n"
+                    + "\r\n"
+                    + body;
             
             out.write(request.getBytes());
             out.flush();
