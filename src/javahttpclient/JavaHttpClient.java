@@ -13,9 +13,8 @@ public class JavaHttpClient {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        // TODO code application logic here
         JavaHttpClient client = new JavaHttpClient();
-        client.PostMultipartExample();
+        client.PostJsonExample();
     }
     
     public JavaHttpClient() {}
@@ -156,6 +155,46 @@ public class JavaHttpClient {
             
             String request = "POST /post HTTP/1.0\r\n"
                     + "Content-Type:multipart/form-data; boundary=\"limit\"\r\n"
+                    + "Content-Length: " + body.length() + "\r\n"
+                    + "\r\n"
+                    + body;
+            
+            out.write(request.getBytes());
+            out.flush();
+            
+            StringBuilder response = new StringBuilder();
+            
+            int data = in.read();
+            
+            while(data != -1) {
+                response.append((char)data);
+                data = in.read();
+            }
+            
+            System.out.println(response);
+            socket.close();
+            
+            
+        } catch(UnknownHostException e) {
+            System.out.println(e);
+        } catch(IOException e) {
+            System.out.println(e);
+        }
+    }
+    
+    public void PostJsonExample() {
+        try {
+            socket = new Socket("httpbin.org", 80);
+            in = socket.getInputStream();
+            out = socket.getOutputStream();
+            
+            String body = "{"
+                    + "\"key1\":value1,"
+                    + "\"key2\":value2"
+                    + "}";
+            
+            String request = "POST /post?info=info HTTP/1.0\r\n"
+                    + "Content-Type:application/json\r\n"
                     + "Content-Length: " + body.length() + "\r\n"
                     + "\r\n"
                     + body;
