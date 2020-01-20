@@ -93,4 +93,45 @@ public class JavaHttpClient {
         }
     }
     
+    public void GetRedirectExample() {
+        try {
+            socket = new Socket("google.com", 80);
+            in = socket.getInputStream();
+            out = socket.getOutputStream();
+            
+            /**
+             * The following request will get a "Permanently Moved" response
+             * telling us to redirect to www.google.com.
+             */
+            String request = "GET / HTTP/1.0\r\n\r\n";
+
+            /**
+             * When we get such a response, we should make a request like this
+             * instead.
+             */
+            //String request = "GET / HTTP/1.0\r\nHost: www.google.com\r\n\r\n";
+            
+            out.write(request.getBytes());
+            out.flush();
+            
+            StringBuilder response = new StringBuilder();
+            
+            int data = in.read();
+            
+            while(data != -1) {
+                response.append((char)data);
+                data = in.read();
+            }
+            
+            System.out.println(response);
+            socket.close();
+            
+            
+        } catch(UnknownHostException e) {
+            System.out.println(e);
+        } catch(IOException e) {
+            System.out.println(e);
+        }
+    }
+    
 }
